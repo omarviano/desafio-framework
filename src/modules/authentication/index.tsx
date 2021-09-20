@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Authentication: React.FC = () => {
-  return <h1>Authentication</h1>;
+  return <div>Authentication Module</div>;
 };
 
 export default Authentication;

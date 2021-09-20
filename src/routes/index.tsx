@@ -7,8 +7,8 @@ const App = lazy(() => import('modules/app'));
 const Routes: React.FC = () => (
   <Suspense fallback={<div>Loading...</div>}>
     <Switch>
-      <Route path="/" exact component={Authentication} />
-      <Route path="/app" component={App} />
+      <Route path="/" exact component={App} />
+      <Route path="/signin" component={Authentication} />
     </Switch>
   </Suspense>
 );
