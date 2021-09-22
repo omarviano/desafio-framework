@@ -60,7 +60,9 @@
     "@typescript-eslint/ban-types": "off",
     "eqeqeq": "off",
     "import/no-extraneous-dependencies": "off",
-    "import/no-duplicates": "off"
+    "import/no-duplicates": "off",
+    "no-restricted-globals": "off",
+    "no-alert": "off"
   },
   "settings": {
     "import/resolver": {

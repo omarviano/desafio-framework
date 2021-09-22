@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import colors from './colors';
 
 export default createGlobalStyle`
   * {
@@ -30,6 +31,15 @@ export default createGlobalStyle`
   input,
   button {
     font-family: 'Open Sans', sans-serif;
+  }
+
+  button {
+    border: 0;
+    cursor: pointer;
+    background: ${colors.primary};
+    color: ${colors.white};
+    padding: 8px;
+    border-radius: 4px;
   }
 
   body.ReactModal__Body--open,
