@@ -1,3 +1,5 @@
+import Modal from 'components/Modal';
+import useModal from 'hooks/modal';
 import React, { useEffect, useState } from 'react';
 import {
   DragDropContext,
@@ -11,6 +13,7 @@ import { TodosServices } from './services';
 
 import {
   Container,
+  Box,
   Column,
   ColumnHeader,
   DroppableContainer,
@@ -18,6 +21,8 @@ import {
 } from './styles';
 
 const ToDos: React.FC = () => {
+  const { open, toggle } = useModal();
+
   const [groupedTodos, setGroupedTodos] = useState<{ [key: string]: Todo[] }>(
     {},
   );
@@ -49,43 +54,50 @@ const ToDos: React.FC = () => {
 
   return (
     <Container>
-      <DragDropContext onDragEnd={onDragEnd}>
-        {Object.entries(groupedTodos).map(([key, todos]) => (
-          <Column key={key}>
-            <ColumnHeader>{key}</ColumnHeader>
+      <button type="button" onClick={toggle}>
+        abrir modal
+      </button>
+      <Box>
+        <DragDropContext onDragEnd={onDragEnd}>
+          {Object.entries(groupedTodos).map(([key, todos]) => (
+            <Column key={key}>
+              <ColumnHeader>{key}</ColumnHeader>
 
-            <Droppable droppableId={key}>
-              {provided => (
-                <DroppableContainer
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {todos.map((item, index) => (
-                    <Draggable
-                      draggableId={`item-${item.id}`}
-                      index={index}
-                      key={`item-${item.id}`}
-                    >
-                      {(provideda, snapshot) => {
-                        return (
-                          <DragItem
-                            ref={provideda.innerRef}
-                            snapshot={snapshot}
-                            {...provideda.draggableProps}
-                            {...provideda.dragHandleProps}
-                          >
-                            {item.title}
-                          </DragItem>
-                        );
-                      }}
-                    </Draggable>
-                  ))}
-                </DroppableContainer>
-              )}
-            </Droppable>
-          </Column>
-        ))}
-      </DragDropContext>
+              <Droppable droppableId={key}>
+                {provided => (
+                  <DroppableContainer
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {todos.map((item, index) => (
+                      <Draggable
+                        draggableId={`item-${item.id}`}
+                        index={index}
+                        key={`item-${item.id}`}
+                      >
+                        {(provideda, snapshot) => {
+                          return (
+                            <DragItem
+                              ref={provideda.innerRef}
+                              snapshot={snapshot}
+                              {...provideda.draggableProps}
+                              {...provideda.dragHandleProps}
+                            >
+                              {item.title}
+                            </DragItem>
+                          );
+                        }}
+                      </Draggable>
+                    ))}
+                  </DroppableContainer>
+                )}
+              </Droppable>
+            </Column>
+          ))}
+        </DragDropContext>
+
+        <Modal open={open} toggle={toggle} title="Tarefa" />
+      </Box>{' '}
     </Container>
   );
 };

@@ -7,6 +7,12 @@ interface DragItemProps {
 }
 
 export const Container = styled.div`
+  button {
+    margin-bottom: 32px;
+  }
+`;
+
+export const Box = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 8px;
