@@ -14,7 +14,7 @@ import { Container, Sidebar, Page } from './styles';
 const Albums = lazy(
   () =>
     import(
-      /* webpackChunkName: "Albums" */
+      /* webpackChunkName: "albums" */
       /* webpackPrefetch: true */
       './albums'
     ),
@@ -23,7 +23,7 @@ const Albums = lazy(
 const Posts = lazy(
   () =>
     import(
-      /* webpackChunkName: "Posts" */
+      /* webpackChunkName: "posts" */
       /* webpackPrefetch: true */
       './posts'
     ),
@@ -32,7 +32,7 @@ const Posts = lazy(
 const Todos = lazy(
   () =>
     import(
-      /* webpackChunkName: "ToDos" */
+      /* webpackChunkName: "todos" */
       /* webpackPrefetch: true */
       './todos'
     ),
