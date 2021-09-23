@@ -14,10 +14,12 @@ export const Container = styled.li`
   }
 `;
 
-export const Content = styled.div``;
+export const Content = styled.div`
+  flex: 1;
+`;
 
 export const ActionsButton = styled.div`
-  width: max-content;
+  width: 144px;
 `;
 
 export const Button = styled.button`
