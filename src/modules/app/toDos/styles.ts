@@ -4,13 +4,8 @@ import colors from 'styles/colors';
 
 interface DragItemProps {
   snapshot: DraggableStateSnapshot;
+  completed: boolean;
 }
-
-export const Container = styled.div`
-  button {
-    margin-bottom: 32px;
-  }
-`;
 
 export const Box = styled.div`
   display: grid;
@@ -35,13 +30,33 @@ export const DroppableContainer = styled.div`
 `;
 
 export const DragItem = styled.div<DragItemProps>`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   padding: 20px;
   border-radius: 6px;
-  background: ${colors.primary};
-  color: ${colors.white};
+  background: ${({ completed }) => (completed ? colors.green : colors.primary)};
+  color: ${({ completed }) => (completed ? colors.black : colors.white)};
   font-weight: 600;
 
   & + div {
     margin-top: 40px;
+  }
+`;
+
+export const DragItemContent = styled.div`
+  flex: 1;
+`;
+
+export const DragItemButtons = styled.div`
+  width: 144px;
+`;
+
+export const Button = styled.button`
+  background: ${colors.white};
+  color: ${colors.black};
+
+  & + button {
+    margin-left: 16px;
   }
 `;

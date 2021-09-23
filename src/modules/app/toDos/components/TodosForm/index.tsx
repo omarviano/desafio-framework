@@ -4,16 +4,16 @@ import { useForm } from 'react-hook-form';
 import Field from 'components/Field';
 import Modal from 'components/Modal';
 
-import { Album } from '../../models/album';
+import { Todo } from '../../models/todo';
+import { TodosServices } from '../../services';
 
-import { AlbumsFormPros } from './props';
-import { Form, Button } from './styles';
-import { AlbumnsServices } from '../../services';
+import { TodosFormPros } from './props';
+import { Button, Form } from './styles';
 
-const AlbumsForm: React.FC<AlbumsFormPros> = ({
+const TodosForm: React.FC<TodosFormPros> = ({
   open,
   toggle,
-  selectedAlbum,
+  selectedTodo,
   onSave,
 }) => {
   const {
@@ -23,13 +23,13 @@ const AlbumsForm: React.FC<AlbumsFormPros> = ({
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (formData: Album) => {
-    if (selectedAlbum) {
-      const { data } = await AlbumnsServices.update(formData.id, formData);
+  const onSubmit = async (formData: Todo) => {
+    if (selectedTodo) {
+      const { data } = await TodosServices.update(formData.id, formData);
 
       onSave(data);
     } else {
-      const { data } = await AlbumnsServices.create(formData);
+      const { data } = await TodosServices.create(formData);
 
       onSave(data);
     }
@@ -39,12 +39,12 @@ const AlbumsForm: React.FC<AlbumsFormPros> = ({
 
   useEffect(() => {
     if (!open) reset({});
-    else reset(selectedAlbum || undefined);
-  }, [selectedAlbum, reset, open]);
+    else reset(selectedTodo || undefined);
+  }, [selectedTodo, reset, open]);
 
   return (
     <Modal
-      title={selectedAlbum ? 'Edição de álbum' : 'Cadastro de álbum'}
+      title={selectedTodo ? 'Edição de tarefa' : 'Cadastro de ttarefa'}
       open={open}
       toggle={toggle}
     >
@@ -61,7 +61,7 @@ const AlbumsForm: React.FC<AlbumsFormPros> = ({
         <Field
           id="title"
           name="title"
-          label="Álbum"
+          label="Tarefa"
           register={register}
           rules={{
             required: {
@@ -71,13 +71,20 @@ const AlbumsForm: React.FC<AlbumsFormPros> = ({
           }}
           errors={errors}
         />
+        <Field
+          id="completed"
+          name="completed"
+          type="checkbox"
+          label="Finalizada"
+          register={register}
+        />
 
         <Button type="submit">
-          {selectedAlbum ? 'Salvar alterações' : 'Cadastrar'}
+          {selectedTodo ? 'Salvar alterações' : 'Cadastrar'}
         </Button>
       </Form>
     </Modal>
   );
 };
 
-export default AlbumsForm;
+export default TodosForm;

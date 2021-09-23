@@ -1,5 +1,3 @@
-import Modal from 'components/Modal';
-import useModal from 'hooks/modal';
 import React, { useEffect, useState } from 'react';
 import {
   DragDropContext,
@@ -8,36 +6,93 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 
+import useModal from 'hooks/modal';
+
+import CreateButton from 'components/CreateButton';
+
 import { Todo } from './models/todo';
 import { TodosServices } from './services';
 
 import {
-  Container,
   Box,
   Column,
   ColumnHeader,
   DroppableContainer,
   DragItem,
+  DragItemContent,
+  DragItemButtons,
+  Button,
 } from './styles';
+import TodosForm from './components/TodosForm';
 
 const ToDos: React.FC = () => {
   const { open, toggle } = useModal();
-
   const [groupedTodos, setGroupedTodos] = useState<{ [key: string]: Todo[] }>(
     {},
   );
+  const [selectedTodo, setSelectedTodo] = useState<Todo>();
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination?.droppableId) return;
 
+    if (result.destination.droppableId === result.source.droppableId) {
+      alert('Movimento permtido somente entre colunas diferentes');
+      return;
+    }
+
     const copy = groupedTodos;
 
-    copy[result.destination.droppableId][result.destination.index] =
-      copy[result.source.droppableId][result.source.index];
-
+    copy[result.destination.droppableId].splice(result.destination.index, 0, {
+      ...copy[result.source.droppableId][result.source.index],
+      completed: result.destination.droppableId === 'Finalizados',
+    });
     copy[result.source.droppableId].splice(result.source.index, 1);
 
     setGroupedTodos(copy);
+  };
+
+  const handleClickCreate = () => {
+    setSelectedTodo(undefined);
+    toggle();
+  };
+
+  const handleClickEdit = (todo: Todo) => {
+    setSelectedTodo(todo);
+    toggle();
+  };
+
+  const handleClickDelete = async (id: number, origin: string) => {
+    if (confirm('A tarefa selecionando será excluído')) {
+      await TodosServices.delete(id);
+
+      setGroupedTodos(state => ({
+        ...state,
+        [origin]: state[origin].filter(item => item.id !== id),
+      }));
+    }
+  };
+
+  const onSave = (todo: Todo) => {
+    if (selectedTodo) {
+      setGroupedTodos(state => ({
+        ...state,
+        [todo.completed ? 'Finalizados' : 'Pra fazer']: [
+          ...state[todo.completed ? 'Finalizados' : 'Pra fazer'].map(item => {
+            if (item.id === todo.id) return todo;
+
+            return item;
+          }),
+        ],
+      }));
+    } else {
+      setGroupedTodos(state => ({
+        ...state,
+        [todo.completed ? 'Finalizados' : 'Pra fazer']: [
+          { ...todo, id: Math.random() },
+          ...state[todo.completed ? 'Finalizados' : 'Pra fazer'],
+        ],
+      }));
+    }
   };
 
   useEffect(() => {
@@ -53,10 +108,8 @@ const ToDos: React.FC = () => {
   }, []);
 
   return (
-    <Container>
-      <button type="button" onClick={toggle}>
-        abrir modal
-      </button>
+    <>
+      <CreateButton onClick={handleClickCreate}>Criar tarefa</CreateButton>
       <Box>
         <DragDropContext onDragEnd={onDragEnd}>
           {Object.entries(groupedTodos).map(([key, todos]) => (
@@ -71,19 +124,33 @@ const ToDos: React.FC = () => {
                   >
                     {todos.map((item, index) => (
                       <Draggable
-                        draggableId={`item-${item.id}`}
+                        draggableId={item.id.toString()}
                         index={index}
-                        key={`item-${item.id}`}
+                        key={item.id.toString()}
                       >
-                        {(provideda, snapshot) => {
+                        {(supplier, snapshot) => {
                           return (
                             <DragItem
-                              ref={provideda.innerRef}
+                              ref={supplier.innerRef}
                               snapshot={snapshot}
-                              {...provideda.draggableProps}
-                              {...provideda.dragHandleProps}
+                              completed={item.completed}
+                              {...supplier.draggableProps}
+                              {...supplier.dragHandleProps}
                             >
-                              {item.title}
+                              <DragItemContent>{item.title}</DragItemContent>
+
+                              <DragItemButtons>
+                                <Button onClick={() => handleClickEdit(item)}>
+                                  Editar
+                                </Button>
+                                <Button
+                                  onClick={() =>
+                                    handleClickDelete(item.id, key)
+                                  }
+                                >
+                                  Deletar
+                                </Button>
+                              </DragItemButtons>
                             </DragItem>
                           );
                         }}
@@ -96,9 +163,14 @@ const ToDos: React.FC = () => {
           ))}
         </DragDropContext>
 
-        <Modal open={open} toggle={toggle} title="Tarefa" />
-      </Box>{' '}
-    </Container>
+        <TodosForm
+          open={open}
+          toggle={toggle}
+          selectedTodo={selectedTodo}
+          onSave={onSave}
+        />
+      </Box>
+    </>
   );
 };
 

@@ -24,7 +24,7 @@ export const LabelField = styled.div<Appearence>`
     (inputType === 'checkbox' || inputType === 'radio') &&
     css`
       display: flex;
-      flex-direction: row-reverse;
+      flex-direction: row;
     `}
 `;
 
@@ -34,7 +34,7 @@ export const Label = styled.label<Appearence>`
   ${({ inputType }) =>
     (inputType === 'checkbox' || inputType === 'radio') &&
     css`
-      margin-left: 24px;
+      margin: 0 16px 0 0;
     `}
 `;
 

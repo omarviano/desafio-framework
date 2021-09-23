@@ -15,7 +15,12 @@ const PostsForm: React.FC<PostsFormPros> = ({
   selectedPost,
   onSave,
 }) => {
-  const { handleSubmit, register, reset } = useForm();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = async (formData: Post) => {
     if (selectedPost) {
@@ -52,8 +57,32 @@ const PostsForm: React.FC<PostsFormPros> = ({
           defaultValue="1"
           readOnly
         />
-        <Field id="title" name="title" label="Title" register={register} />
-        <Field id="body" name="body" label="Conteúdo" register={register} />
+        <Field
+          id="title"
+          name="title"
+          label="Title"
+          register={register}
+          rules={{
+            required: {
+              value: true,
+              message: 'Campo obrigatório',
+            },
+          }}
+          errors={errors}
+        />
+        <Field
+          id="body"
+          name="body"
+          label="Conteúdo"
+          register={register}
+          rules={{
+            required: {
+              value: true,
+              message: 'Campo obrigatório',
+            },
+          }}
+          errors={errors}
+        />
 
         <Button type="submit">
           {selectedPost ? 'Salvar alterações' : 'Cadastrar'}
