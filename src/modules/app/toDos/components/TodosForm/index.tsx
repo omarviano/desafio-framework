@@ -77,6 +77,7 @@ const TodosForm: React.FC<TodosFormPros> = ({
           type="checkbox"
           label="Finalizada"
           register={register}
+          visible={!selectedTodo}
         />
 
         <Button type="submit">
